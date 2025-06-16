@@ -1,0 +1,15 @@
+[project]
+name = "mino-fast"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "boto3>=1.38.36",
+    "fastapi[all]>=0.115.12",
+    "mariadb>=1.1.12",
+    "mysql-connector-python>=9.3.0",
+    "mysqlclient>=2.2.7",
+    "ruff>=0.11.13",
+    "sqlalchemy>=2.0.41",
+]
