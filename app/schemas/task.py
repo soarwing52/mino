@@ -5,6 +5,7 @@ from pydantic import BaseModel, ConfigDict
 class TaskBase(BaseModel):
     title: str
     description: str
+    file_key: str | None = None
 
 
 class TaskCreate(TaskBase):

@@ -4,7 +4,7 @@ from fastapi.responses import JSONResponse
 from pydantic import ValidationError
 from app.api.v1.task import router as task_router
 
-app = FastAPI(title="Task API", version="1.0.0", description="CRUD API with MariaDB + MinIO")
+app = FastAPI(title="Task API", version="1.0.0", description="CRUD API")
 
 
 # Handle all ValidationError (typically raised by pydantic validation)
