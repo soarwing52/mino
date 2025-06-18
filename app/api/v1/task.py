@@ -10,7 +10,7 @@ from app.core.db import get_db
 router = APIRouter()
 
 
-@router.post("/", response_model=TaskRead)
+@router.post("/", response_model=TaskRead, tags=["tasks"])
 async def create_new_task(
     db: Session = Depends(get_db),
     title: str = Form(...),
@@ -21,13 +21,13 @@ async def create_new_task(
     return create_task(db, item, file)
 
 
-@router.get("/", response_model=list[TaskRead])
-def get_all_tasks(db: Session = Depends(get_db)):
+@router.get("/", response_model=list[TaskRead], tags=["tasks"])
+async def get_all_tasks(db: Session = Depends(get_db)):
     return list_tasks(db)
 
 
 @router.get("/{task_id}", response_model=TaskRead)
-def get_task_by_id(task_id: int, db: Session = Depends(get_db)):
+async def get_task_by_id(task_id: int, db: Session = Depends(get_db)):
     task = get_task(db, task_id)
     if not task:
         raise HTTPException(404, "Not found")
@@ -35,7 +35,7 @@ def get_task_by_id(task_id: int, db: Session = Depends(get_db)):
 
 
 @router.delete("/{task_id}")
-def delete_task_by_id(task_id: int, db: Session = Depends(get_db)):
+async def delete_task_by_id(task_id: int, db: Session = Depends(get_db)):
     if delete_task(db, task_id):
         return {"msg": "Deleted"}
     raise HTTPException(404, "Not found")
