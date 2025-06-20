@@ -4,15 +4,15 @@ FROM python:3.11-slim-bookworm
 WORKDIR /usr/src/app
 
 
-# 安裝依賴
+# 安裝依賴（Oracle 驅動使用 thin mode，不需要 Oracle Instant Client）
 RUN apt-get update && apt-get install -y \
     curl \
     build-essential \
-    libmariadb-dev \
-    default-libmysqlclient-dev \
-    pkg-config \
+    libaio1 \
+    python3-dev \
+    libffi-dev \
+    libssl-dev \
     && rm -rf /var/lib/apt/lists/*
-
 # 安裝 uv
 RUN pip install --no-cache-dir uv
 
