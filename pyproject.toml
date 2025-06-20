@@ -7,6 +7,7 @@ requires-python = ">=3.11"
 dependencies = [
     "boto3>=1.38.36",
     "fastapi[all]>=0.115.12",
+    "flake8>=7.2.0",
     "httpx>=0.28.1",
     "mariadb>=1.1.12",
     "minio>=7.2.15",

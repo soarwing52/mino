@@ -1,4 +1,3 @@
-# app/schemas/task.py
 from pydantic import BaseModel, ConfigDict
 
 
@@ -6,6 +5,15 @@ class TaskBase(BaseModel):
     title: str
     description: str
     file_key: str | None = None
+
+
+class FilenameRequest(BaseModel):
+    filename: str
+
+
+class TaskPresignedUrl(BaseModel):
+    presigned_url: str
+    object_key: str
 
 
 class TaskCreate(TaskBase):

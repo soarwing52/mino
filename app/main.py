@@ -2,7 +2,8 @@ import time
 from fastapi import FastAPI, HTTPException, Request
 from fastapi.responses import JSONResponse
 from pydantic import ValidationError
-from app.api.v1.task import router as task_router
+
+from app.api.v1.TaskRouter import task_router
 from app.utils.logger import error_logger, access_logger
 
 app = FastAPI(title="Task API", version="1.0.0", description="CRUD API")
@@ -14,7 +15,9 @@ async def log_requests(request: Request, call_next):
     start_time = time.time()
     response = await call_next(request)
     process_time = (time.time() - start_time) * 1000
-    log_msg = f"{request.method} {request.url.path} - status_code: {response.status_code} - duration: {process_time:.2f}ms"
+    log_msg = (
+        f"{request.method} {request.url.path} - status_code: {response.status_code} - duration: {process_time:.2f}ms"
+    )
     access_logger.info(log_msg)
     return response
 

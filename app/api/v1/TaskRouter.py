@@ -1,32 +1,34 @@
-# app/api/v1/task.py
 from fastapi import APIRouter, File, Form, UploadFile, Depends, HTTPException
 from sqlalchemy.orm import Session
 
-from app.schemas.task import TaskCreate, TaskRead
+from app.schemas import TaskSchema
 from app.services.task_service import create_task, get_task, list_tasks, delete_task
+from app.services import task_service
 from app.core.db import get_db
 
 
-router = APIRouter()
+task_router = APIRouter()
 
 
-@router.post("/", response_model=TaskRead, tags=["tasks"])
+@task_router.post("/upload-url", response_model=TaskSchema.TaskPresignedUrl, tags=["tasks"])
+async def generate_presigned_url(payload: TaskSchema.FilenameRequest):
+    return task_service.generate_presigned_url(payload.filename)
+
+
+@task_router.post("/", response_model=TaskSchema.TaskRead, tags=["tasks"])
 async def create_new_task(
+    item: TaskSchema.TaskCreate,
     db: Session = Depends(get_db),
-    title: str = Form(...),
-    description: str = Form(...),
-    file: UploadFile = File(...),
 ):
-    item = TaskCreate(title=title, description=description)
-    return create_task(db, item, file)
+    return create_task(db, item)
 
 
-@router.get("/", response_model=list[TaskRead], tags=["tasks"])
+@task_router.get("/", response_model=list[TaskSchema.TaskRead], tags=["tasks"])
 async def get_all_tasks(db: Session = Depends(get_db)):
     return list_tasks(db)
 
 
-@router.get("/{task_id}", response_model=TaskRead)
+@task_router.get("/{task_id}", response_model=TaskSchema.TaskRead)
 async def get_task_by_id(task_id: int, db: Session = Depends(get_db)):
     task = get_task(db, task_id)
     if not task:
@@ -34,7 +36,7 @@ async def get_task_by_id(task_id: int, db: Session = Depends(get_db)):
     return task
 
 
-@router.delete("/{task_id}")
+@task_router.delete("/{task_id}")
 async def delete_task_by_id(task_id: int, db: Session = Depends(get_db)):
     if delete_task(db, task_id):
         return {"msg": "Deleted"}

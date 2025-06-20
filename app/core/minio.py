@@ -1,6 +1,7 @@
-# app/core/minio.py
 from minio import Minio
 from enum import Enum
+from datetime import timedelta
+from app.utils.logger import error_logger
 
 
 class BucketName(str, Enum):
@@ -44,7 +45,26 @@ def create_bucket(bucket_name: BucketName):
         else:
             print(f"桶 {bucket_name.value} 已存在")
     except Exception as e:
+        error_logger.error(f"創建桶 {bucket_name.value} 失敗: {e}")
         print(f"創建桶失敗: {e}")
+
+
+def generate_presigned_url(bucket_name: BucketName, object_name: str, method: str = "GET", expires: int = 3600) -> str:
+    """
+    生成預簽名 URL，用於訪問 MinIO 桶中的對象
+    """
+    try:
+        create_bucket(bucket_name)  # 確保桶存在
+        url = minio_client.get_presigned_url(
+            method,
+            bucket_name.value,
+            object_name,
+            expires=timedelta(seconds=expires),
+        )
+        return url
+    except Exception as e:
+        error_logger.error(f"生成預簽名 URL 失敗: {e}")
+        return ""
 
 
 def upload_file(bucket_name: BucketName, file_path: str, object_name: str) -> bool:
